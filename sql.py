@@ -18,9 +18,9 @@ class sql:
     def maketrans(self,bibsys,prodnr):
         uid = self.get_uid_from_bibsys(bibsys)
         prodid = self.get_prodid_from_prodnr(prodnr)
-        cur.execute("INSERT INTO transaksjoner SET type,userid,produktid,antall,Dato ")
+        cur.execute("""INSERT INTO transaksjoner SET type,userid,produktid, antall = %d , %d ,%d,%d""", 1, uid, prodid, 1 )
         
-        print cur.fetchone()
+        
 
     def get_uid_from_bibsys(self, bibsys):
         data = self.cur.execute("SELECT uid FROM users WHERE bibsys = %s", bibsys)
@@ -33,3 +33,5 @@ class sql:
 sq = sql()
 uid=sq.get_uid_from_bibsys(321)
 print uid
+
+#sq.maketrans(123,901)
