@@ -54,13 +54,3 @@ class sql:
         else:
             return False
 
-
-sq = sql()
-uid=sq.get_uid_from_bibsys(321)
-print uid
-
-#print sq.maketrans(123,901)
-
-print sq.is_user(3291)
-
-
