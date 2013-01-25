@@ -1,4 +1,4 @@
-
+import sys
 import sefview
 import curses
 #import sql
@@ -6,7 +6,7 @@ import curses
 class Controller:
         
     def main(self, wnd):
-        self.db = sql.sql()
+        #self.db = sql.sql()
         self.kritemode = False
         curses.echo()
         self.view = sefview.Sefview(wnd)
@@ -15,13 +15,15 @@ class Controller:
             self.view.createWnds()
             self.view.drawLogo()
             #view.drawScanProduct()
-            self.view.writeMainNoClear(test, line)
-            line += 1
-            key = view.readInput()
-            if self.db.is_product(key):
-                self.buy(key)
-            elif key == 'k': #kritemode?
+            key = self.view.readInput()
+            #if self.db.is_product(key):
+             #   self.buy(key)
+            """elif key == 'k': #kritemode?
                 self.kritemode = True
+                """
+            if key == "k":
+                self.kritemode = True
+                self.view.writeError("KRITEMODE!!!!")
             elif key == "addperson":
                 #TODO
                 self.view.writeError("not implemented")
@@ -37,39 +39,34 @@ class Controller:
             elif key == "updateq":
                 #TODO
                 self.view.writeError("not implemented")
-            elif key == "addq":
-                #TODO
-                self.view.writeError("not implemented")
-            elif key == "addq":
-                #TODO
-                self.view.writeError("not implemented")
             elif key == "help":
                 self.help()
-            else:
-                self.view.writeError("hmm, feil?")
+            elif key == "quit":
+                sys.exit(0)
             
 
     def buy(self, prodnr):
         key = view.readInput()
-        if db.is_uid(key):
+        view.writeError(key) #test
+        """if db.is_uid(key):
             db.maketrans(key, prodnr)
             self.view.writeMain("kjopt")
         else:
             view.writeError("Ukjent bruker")
-            
+          """  
             
             
 
     def help(self):
         helpstr = """<<<<<<Help>>>>>>
-			options (enter options) then do:
 			addperson (add new person)
 			addproduct (add new person)
 			remperson (remove existing person)
 			remproduct (remove existing product)
 			updateq (update quantity of product)
 			addq (add quantity of product)
-			clear (clear person)"""
+                        """
+
         self.view.writeMain(helpstr)
         
 
