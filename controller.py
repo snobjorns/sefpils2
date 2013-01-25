@@ -1,12 +1,12 @@
 import sys
 import sefview
 import curses
-#import sql
+import sql
 
 class Controller:
         
     def main(self, wnd):
-        #self.db = sql.sql()
+        self.db = sql.sql()
         self.kritemode = False
         curses.echo()
         self.view = sefview.Sefview(wnd)
@@ -16,8 +16,8 @@ class Controller:
             self.view.drawLogo()
             #view.drawScanProduct()
             key = self.view.readInput()
-            #if self.db.is_product(key):
-             #   self.buy(key)
+            if self.db.is_product(key):
+                self.buy(key)
             """elif key == 'k': #kritemode?
                 self.kritemode = True
                 """
@@ -46,14 +46,14 @@ class Controller:
             
 
     def buy(self, prodnr):
-        key = view.readInput()
-        view.writeError(key) #test
-        """if db.is_uid(key):
-            db.maketrans(key, prodnr)
+        key = self.view.readInput()
+        self.view.writeError(key) #test
+        if self.db.is_user(key):
+            self.db.maketrans(key, prodnr)
             self.view.writeMain("kjopt")
         else:
-            view.writeError("Ukjent bruker")
-          """  
+            self.view.writeError("Ukjent bruker")
+            
             
             
 
