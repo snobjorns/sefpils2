@@ -74,15 +74,3 @@ class sql:
         self.cur.execute("SELECT uid,uname,name FROM users")
         return self.cur.fetchall()
 
-
-sq = sql()
-uid=sq.get_uid_from_bibsys(321)
-print uid
-
-print sq.maketrans(123,901)
-
-print sq.is_user(3291)
-
-print sq.get_users()
-print sq.get_stat24(901)
-
