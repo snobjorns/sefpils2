@@ -75,6 +75,20 @@ class sql:
         return self.cur.fetchall()
 
 
+    def addperson(self, bibsys,name,uname,pw):
+        if self.is_user(bibsys) == False: 
+            try:
+                print self.cur.execute("INSERT INTO users (uname,password,name,email,bibsys) VALUES ('%s','%s','%s','%s','%s')" % (uname,pw,name,"default@sef.no",bibsys ))
+               
+                print "INSERT INTO users (uname,password,name,email,bibsys) VALUES ('%s','%s','%s','%s',%s)" % (uname,pw,name,"default@sef.no",bibsys )
+                return True
+            except MySQLdb.Error,e :
+                print e
+                return False
+        else :
+            return False
+
+    
 sq = sql()
 uid=sq.get_uid_from_bibsys(321)
 print uid
@@ -85,4 +99,5 @@ print sq.is_user(3291)
 
 print sq.get_users()
 print sq.get_stat24(901)
-
+print "______________"
+print sq.addperson(124,"kanin","kore","hubju")
