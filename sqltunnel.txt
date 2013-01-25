@@ -1,0 +1,11 @@
+Hvordan koble til movievote databasen remotely:
+
+1. Lage rsa nøkkelpar hos klienten, og legg til .pub nøkkelen til i authorized_keys på server
+
+2. Åpne en ssh tunnell(bør gjøres som daemon):
+
+  ssh -fNg -L 3307:127.0.0.1:3306 mysqltunnel@snobjorns.dyndns.tv
+
+3. koble til databasen med username = sef, host = 127.0.0.1:3307 , pass= "" 
+evt i sql shell for test:
+	mysql -u sef -p -h 127.0.0.1 -P 3307 movievote
