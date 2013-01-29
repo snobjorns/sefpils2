@@ -26,8 +26,8 @@ class sql:
             self.cur.execute("INSERT INTO transaksjoner (type,userid,produktid,antall,Dato) VALUES (%s, %s ,%s,%s,%s)",( 1, uid, prodid, 1,today) )
             self.cur.execute("UPDATE produkter SET  beholdning = beholdning-1 WHERE produktid = %s " ,prodid)
             return True
-        except MySQLdb.Error, e:
-            print e
+        except Exception, e:
+            print repr(e)
             return False
         
 
@@ -78,14 +78,11 @@ class sql:
     def addperson(self, bibsys,name,uname,pw):
         if self.is_user(bibsys) == False: 
             try:
-                ####DOES NOT WORK####
-                print self.cur.execute("INSERT INTO users (uname,password,name,email,bibsys) VALUES (%s,%s,%s,%s,%s)" , (uname,pw,name,"default@sef.no",bibsys ))
-               
-                #print "INSERT INTO users (uname,password,name,email,bibsys) VALUES ('%s','%s','%s','%s',%s)" % (uname,pw,name,"default@sef.no",bibsys )
-                return True
-            except MySQLdb.Error,e :
-                print e
-                return False
+                self.cur.execute("INSERT INTO users (uname,password,name,email,bibsys) VALUES (%s,%s,%s,%s,%s);" , (uname,pw,name,"default@sef.no",bibsys))
+                self.mysql.commit()
+            except Exception ,e: 
+                print repr(e)
+            return True
         else :
             return False
 
@@ -93,14 +90,14 @@ class sql:
 sq = sql()
 
 
-print sq.addperson(124,"kanin","kore","hubju")
-uid=sq.get_uid_from_bibsys(321)
-print uid
+print sq.addperson(125,"kagnin","kggggore","hugbju")
+#uid=sq.get_uid_from_bibsys(321)
+#print uid
 
-print sq.maketrans(123,901)
+#print sq.maketrans(123,901)
 
-print sq.is_user(3291)
+#print sq.is_user(3291)
 
 print sq.get_users()
-print sq.get_stat24(901)
-print "______________"
+#print sq.get_stat24(901)
+#print "______________"
