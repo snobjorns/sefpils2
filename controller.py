@@ -6,10 +6,22 @@ import sql
 class Controller:
         
     def main(self, wnd):
-        self.db = sql.sql()
-        self.kritemode = False
-        curses.echo()
+        conn = False
+        #curses.echo()
         self.view = sefview.Sefview(wnd)
+        self.view.writeError("Skriv inn databasepassord")
+        self.db = sql.sql(self.view)
+        while conn == False:
+            try:
+                pw = self.view.readInput()
+                self.db.connect(pw)
+                conn = True
+                self.view.writeError("")
+            except Exception:
+                self.view.writeError("Kunne ikke koble til database, prov igjen:")
+
+        curses.echo()
+        self.kritemode = False
         
         while True:
             self.view.createWnds()

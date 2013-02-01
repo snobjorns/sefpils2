@@ -4,20 +4,23 @@ import time, datetime
 
 
 class sql:
-    def __init__(self):
+    def __init__(self, output):
+        self.output = output
+
+    def connect(self,pw):
         host="127.0.0.1"
         port=3307
         db= "movievote"
-        pw = "sefsef123"
         user = "sef"
+    
         try:
             self.mysql = MySQLdb.connect(host=host,user=user,passwd=pw,db=db, port=port)        
             self.cur = self.mysql.cursor()
-        except MySQLdb.Error, e:
-            print "could not connect to db"
-            
+        except Exception:
+           # self.output.writeError("Kan ikke koble til database")
+            raise 
 
-    
+            
     def maketrans(self,bibsys,prodnr):
         try: 
             uid = self.get_uid_from_bibsys(bibsys)
@@ -87,10 +90,10 @@ class sql:
             return False
 
     
-sq = sql()
+#sq = sql()
 
 
-print sq.addperson(125,"kagnin","kggggore","hugbju")
+#print sq.addperson(125,"kagnin","kggggore","hugbju")
 #uid=sq.get_uid_from_bibsys(321)
 #print uid
 
@@ -98,6 +101,6 @@ print sq.addperson(125,"kagnin","kggggore","hugbju")
 
 #print sq.is_user(3291)
 
-print sq.get_users()
+#print sq.get_users()
 #print sq.get_stat24(901)
 #print "______________"
