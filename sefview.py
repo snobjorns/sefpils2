@@ -56,20 +56,24 @@ class Sefview:
 	def beerRankStat(self, beerTupleList):
 		self.statwnd.clear()
 		beerTupleList.sort(key = lambda p: -1*p[1])
-		line = 0
+		line = 2
 		longest = 0
+                header = "Antall kjopte enheter siste 24 timer"
+		self.statwnd.addstr(0,0, header, curses.color_pair(2))
+
 		for i in beerTupleList:
 			l = len(i[0])
 			if l > longest:
 				longest = l
 		for i in beerTupleList:
-			string = "%2d: %*s Enheter:" % (line+1, longest, i[0])
-			for j in range(i[1]):
-				string += "#"
-			self.statwnd.addstr(line,0, string, curses.color_pair(2))
-			line += 1
-			if line >= self.ysize-3:
-				break
+                        if i[1] > 0:
+			        string = "%2d: %*s Enheter:" % (line-1, longest, i[0])
+			        for j in range(i[1]):
+				        string += "#"
+			        self.statwnd.addstr(line,0, string, curses.color_pair(2))
+			        line += 1
+			        if line >= self.ysize-3:
+				    break
 		self.statwnd.refresh()
 			
 		

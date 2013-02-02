@@ -66,7 +66,7 @@ class sql:
         persons = []
         for user in users: 
             
-            self.cur.execute("SELECT COUNT(transid) FROM transaksjoner WHERE userid = %s AND Dato > %s ",(user[0] , past))
+            self.cur.execute("SELECT COUNT(transid) FROM transaksjoner WHERE userid = %s AND Dato > %s",(user[0] , past))
             number=self.cur.fetchone()[0]
             name =user[2]
             persons.append((name,number))

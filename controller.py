@@ -20,11 +20,13 @@ class Controller:
             except Exception:
                 self.view.writeError("Kunne ikke koble til database, prov igjen:")
 
+        self.updatestats()
         self.kritemode = False
         
         while True:
+            self.view.beerRankStat(self.stats)
             if self.kritemode == True:
-                self.view.writeError("KRITEMODE!!!! (trykk k for masnlig modus)")
+                self.view.writeError("KRITEMODE!!!! (trykk k for vanlig modus)")
 #            else:
 #                self.view.writeError("")
 
@@ -65,6 +67,7 @@ class Controller:
         if self.db.is_user(key):
             self.db.maketrans(key, prodnr)
             self.view.writeMain("kjopt")
+            self.updatestats()
         else:
             self.view.writeError("Ukjent bruker")
             
@@ -121,6 +124,9 @@ class Controller:
         except Exception, e:
             self.view.writeError("Error: " + str(e))
             
+    def updatestats(self):
+        self.stats= self.db.get_stat24("901")
+
 
     def help(self):
         helpstr = """<<<<<<Help>>>>>>
