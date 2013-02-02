@@ -7,7 +7,7 @@ class Controller:
         
     def main(self, wnd):
         conn = False
-        #curses.echo()
+        curses.echo()
         self.view = sefview.Sefview(wnd)
         self.view.writeError("Skriv inn databasepassord")
         self.db = sql.sql(self.view)
@@ -20,10 +20,14 @@ class Controller:
             except Exception:
                 self.view.writeError("Kunne ikke koble til database, prov igjen:")
 
-        curses.echo()
         self.kritemode = False
         
         while True:
+            if self.kritemode == True:
+                self.view.writeError("KRITEMODE!!!! (trykk k for masnlig modus)")
+#            else:
+#                self.view.writeError("")
+
             self.view.createWnds()
             self.view.drawLogo()
             #view.drawScanProduct()
@@ -34,23 +38,21 @@ class Controller:
                 self.kritemode = True
                 """
             if key == "k":
-                self.kritemode = True
-                self.view.writeError("KRITEMODE!!!!")
+                self.kritemode = not self.kritemode
+                if self.kritemode == False:
+                    self.view.writeError("")
             elif key == "addperson":
-                #TODO
-                self.view.writeError("not implemented")
+                self.addperson()
             elif key == "addproduct":
+                self.addproduct()
+            elif key == "remperson": #NOT NEEDED
                 #TODO
                 self.view.writeError("not implemented")
-            elif key == "remperson":
+            elif key == "remproduct": #NOT NEEDED
                 #TODO
                 self.view.writeError("not implemented")
-            elif key == "remproduct":
-                #TODO
-                self.view.writeError("not implemented")
-            elif key == "updateq":
-                #TODO
-                self.view.writeError("not implemented")
+            elif key == "updateq":# prodnr og antall
+                self.updateq()
             elif key == "help":
                 self.help()
             elif key == "quit":
@@ -66,7 +68,58 @@ class Controller:
         else:
             self.view.writeError("Ukjent bruker")
             
-            
+    def addperson(self):
+        
+        self.view.writeError("Skann strekkode (studentkort):")
+        bibsys = self.view.readInput()
+        self.view.writeError("Skriv brukernavn:")
+        uname = self.view.readInput()
+        self.view.writeError("Skriv navn:")
+        name = self.view.readInput()
+        self.view.writeError("Skriv skriv passord (Skriv riktig!):")
+        pw = self.view.readInput()
+        try:
+            status = self.db.addperson(bibsys,name,uname,pw)
+            if status == False:
+                self.view.writeError("Bruker finnes")
+            else:
+                self.view.writeError("Bruker lagt til")
+        except Exception, e:
+            self.view.writeError("Error: "+ str(e))
+
+    def updateq(self):
+        
+        self.view.writeError("Skann strekkode:")
+        prodnr = self.view.readInput()
+        self.view.writeError("Skriv nytt antall:")
+        quant = self.view.readInput()
+        if self.db.is_product(prodnr):
+            try:
+                self.db.updateq(prodnr,quant)
+                self.view.errorWrite("Beholdning oppdatert!")
+            except Exception,e:
+                self.view.writeError("Error: "+ str(e))
+        else:
+            self.view.writeError("produktet er ikke i beholdningen, legg det til forst")
+
+
+    def addproduct(self):
+        
+        self.view.writeError("Skann ny vare:")
+        prodnr = self.view.readInput()
+        self.view.writeError("Skriv produktbeskrivelse:")
+        prodname = self.view.readInput()
+        self.view.writeError("Skriv antall:")
+        quant = self.view.readInput()
+        self.view.writeError("Skriv innkjopspris:")
+        iprice = self.view.readInput()
+        self.view.writeError("Skriv utsalgspris:")
+        oprice = self.view.readInput()
+        try:
+            self.db.addproduct(prodnr, prodname,quant,iprice,oprice )
+            self.view.writeError(prodname +" lagt til")
+        except Exception, e:
+            self.view.writeError("Error: " + str(e))
             
 
     def help(self):

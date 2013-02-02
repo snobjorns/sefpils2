@@ -1,6 +1,7 @@
 import MySQLdb
 import time, datetime
-
+import os
+import hashlib
 
 
 class sql:
@@ -12,8 +13,8 @@ class sql:
         port=3307
         db= "movievote"
         user = "sef"
-    
         try:
+           # os.system("ssh -fNg -L 3307:127.0.0.1:3306 mysqltunnel@snobjorns.dyndns.tv")
             self.mysql = MySQLdb.connect(host=host,user=user,passwd=pw,db=db, port=port)        
             self.cur = self.mysql.cursor()
         except Exception:
@@ -29,8 +30,8 @@ class sql:
             self.cur.execute("INSERT INTO transaksjoner (type,userid,produktid,antall,Dato) VALUES (%s, %s ,%s,%s,%s)",( 1, uid, prodid, 1,today) )
             self.cur.execute("UPDATE produkter SET  beholdning = beholdning-1 WHERE produktid = %s " ,prodid)
             return True
-        except Exception, e:
-            print repr(e)
+        except Exception:
+            self.output.writeError("Kunne ikke utfore transaksjon")
             return False
         
 
@@ -80,16 +81,36 @@ class sql:
 
     def addperson(self, bibsys,name,uname,pw):
         if self.is_user(bibsys) == False: 
+            pw = hashlib.md5(pw).hexdigest()
             try:
                 self.cur.execute("INSERT INTO users (uname,password,name,email,bibsys) VALUES (%s,%s,%s,%s,%s);" , (uname,pw,name,"default@sef.no",bibsys))
                 self.mysql.commit()
-            except Exception ,e: 
-                print repr(e)
-            return True
-        else :
+                return True
+            except Exception, e:
+                raise e
+        else:
             return False
 
-    
+    def addproduct(self, prodnr,prodname,number, iprice,uprice):
+        try:
+            self.cur.execute("INSERT INTO produkter (produktnr, produktnavn, beholdning, innpris, utpris) VALUES (%s,%s,%s,%s,%s)", (prodnr,prodname,number,iprice,uprice))
+            self.mysql.commit()
+        except Exception,e:
+            raise e
+
+
+    def updateq(self,prodnr,quant):
+        try:
+            self.cur.execute("SELECT beholdning FROM produkter WHERE produktnr = %s",(prodnr))
+            before = self.cur.fetchone()[0]
+            prodid = self.get_prodid_from_prodnr(prodnr)
+            diff = float(quant) - before
+            self.cur.execute("UPDATE produkter SET beholdning = %s WHERE produktid = %s", (quant, prodid))
+            self.cur.execute("INSERT INTO transaksjoner (type, produktid,antall) VALUES (%s,%s,%s) ", (2, str(prodid),str(diff)))
+        except Exception,e:
+            raise e
+
+
 #sq = sql()
 
 
